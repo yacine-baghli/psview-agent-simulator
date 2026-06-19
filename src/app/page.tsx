@@ -1010,7 +1010,7 @@ export default function Home() {
                 {/* STEP 1: ANALYSIS */}
                 <div className={`p-4 rounded-xl border transition-all ${
                   reasoningPhase === "analyzing" 
-                    ? "bg-[#0b141d]/80 dark:bg-[#0b141d]/80 border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.15)] ring-1 ring-cyan-500/20" 
+                    ? "bg-bg-step-analysis-active border-border-step-analysis-active shadow-[0_0_15px_rgba(6,182,212,0.15)] ring-1 ring-border-step-analysis-active/20" 
                     : activeReasoning 
                       ? "bg-bg-card-dark border-border-theme opacity-85" 
                       : "bg-bg-input border-border-theme opacity-40"
@@ -1060,7 +1060,7 @@ export default function Home() {
                 {/* STEP 2: STRATEGY */}
                 <div className={`p-4 rounded-xl border transition-all ${
                   reasoningPhase === "strategizing" 
-                    ? "bg-[#111124]/80 dark:bg-[#111124]/80 border-indigo-500/40 shadow-[0_0_15px_rgba(99,102,241,0.15)] ring-1 ring-indigo-500/20" 
+                    ? "bg-bg-step-strategy-active border-border-step-strategy-active shadow-[0_0_15px_rgba(99,102,241,0.15)] ring-1 ring-border-step-strategy-active/20" 
                     : activeReasoning 
                       ? "bg-bg-card-dark border-border-theme opacity-85" 
                       : "bg-bg-input border-border-theme opacity-40"
@@ -1098,7 +1098,7 @@ export default function Home() {
                 {/* STEP 3: DRAFT */}
                 <div className={`p-4 rounded-xl border transition-all ${
                   reasoningPhase === "drafting" 
-                    ? "bg-[#16101c]/80 dark:bg-[#16101c]/80 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.15)] ring-1 ring-purple-500/20" 
+                    ? "bg-bg-step-draft-active border-border-step-draft-active shadow-[0_0_15px_rgba(168,85,247,0.15)] ring-1 ring-border-step-draft-active/20" 
                     : activeReasoning 
                       ? "bg-bg-card-dark border-border-theme opacity-85" 
                       : "bg-bg-input border-border-theme opacity-40"
@@ -1125,7 +1125,7 @@ export default function Home() {
                       )}
                     </div>
                   ) : activeReasoning ? (
-                    <div className="text-[11px] leading-relaxed text-text-secondary dark:text-slate-400 font-mono bg-black/5 dark:bg-black/25 p-2 rounded max-h-[120px] overflow-y-auto border border-border-theme">
+                    <div className="text-[11px] leading-relaxed text-text-primary font-mono bg-black/5 dark:bg-black/25 p-2 rounded max-h-[120px] overflow-y-auto border border-border-theme">
                       {activeReasoning.initialDraft}
                     </div>
                   ) : null}
@@ -1134,7 +1134,7 @@ export default function Home() {
                 {/* STEP 4: REVIEW & CORRECTION */}
                 <div className={`p-4 rounded-xl border transition-all ${
                   reasoningPhase === "reviewing" 
-                    ? "bg-[#181111]/80 dark:bg-[#181111]/80 border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.15)] ring-1 ring-rose-500/20" 
+                    ? "bg-bg-step-review-active border-border-step-review-active shadow-[0_0_15px_rgba(244,63,94,0.15)] ring-1 ring-border-step-review-active/20" 
                     : activeReasoning 
                       ? "bg-bg-card-dark border-border-theme opacity-85" 
                       : "bg-bg-input border-border-theme opacity-40"
@@ -1194,7 +1194,7 @@ export default function Home() {
                 {/* STEP 5: FINAL OUTPUT */}
                 <div className={`p-4 rounded-xl border transition-all ${
                   reasoningPhase === "complete" && activeReasoning 
-                    ? "bg-[#0b1c13]/80 dark:bg-[#0b1c13]/80 border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/20" 
+                    ? "bg-bg-step-delivery-active border-border-step-delivery-active shadow-[0_0_15px_rgba(16,185,129,0.15)] ring-1 ring-border-step-delivery-active/20" 
                     : "bg-bg-input border-border-theme opacity-40"
                 }`}>
                   <div className="flex justify-between items-center mb-3">
