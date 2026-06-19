@@ -66,8 +66,10 @@ export default function Home() {
   // Theme state
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
-  // Key inputs
+  // API Config inputs
+  const [apiProvider, setApiProvider] = useState<"gemini" | "openai" | "anthropic">("gemini");
   const [apiKey, setApiKey] = useState("");
+  const [apiModel, setApiModel] = useState("");
   const [showKeyInput, setShowKeyInput] = useState(false);
 
   // Form State (initialized with first preset - PSVIEW)
@@ -104,11 +106,19 @@ export default function Home() {
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Load API Key and Theme from LocalStorage on mount
+  // Load API Key, Provider, Model, and Theme from LocalStorage on mount
   useEffect(() => {
-    const savedKey = localStorage.getItem("psview_gemini_key");
+    const savedKey = localStorage.getItem("psview_api_key") || localStorage.getItem("psview_gemini_key");
     if (savedKey) {
       setApiKey(savedKey);
+    }
+    const savedProvider = localStorage.getItem("psview_api_provider") as "gemini" | "openai" | "anthropic" | null;
+    if (savedProvider) {
+      setApiProvider(savedProvider);
+    }
+    const savedModel = localStorage.getItem("psview_api_model");
+    if (savedModel) {
+      setApiModel(savedModel);
     }
     const savedTheme = localStorage.getItem("psview_theme") as "light" | "dark" | null;
     if (savedTheme) {
@@ -135,9 +145,30 @@ export default function Home() {
   const handleSaveKey = (val: string) => {
     setApiKey(val);
     if (val) {
-      localStorage.setItem("psview_gemini_key", val);
+      localStorage.setItem("psview_api_key", val);
+      localStorage.setItem("psview_gemini_key", val); // fallback safety
     } else {
+      localStorage.removeItem("psview_api_key");
       localStorage.removeItem("psview_gemini_key");
+    }
+  };
+
+  // Save Provider
+  const handleSaveProvider = (val: "gemini" | "openai" | "anthropic") => {
+    setApiProvider(val);
+    localStorage.setItem("psview_api_provider", val);
+    // Reset key and model suggestion on shift if desired, or let them stay
+    setApiModel("");
+    localStorage.removeItem("psview_api_model");
+  };
+
+  // Save Model
+  const handleSaveModel = (val: string) => {
+    setApiModel(val);
+    if (val) {
+      localStorage.setItem("psview_api_model", val);
+    } else {
+      localStorage.removeItem("psview_api_model");
     }
   };
 
@@ -186,9 +217,13 @@ export default function Home() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(apiKey ? { "x-gemini-key": apiKey } : {}),
         },
         body: JSON.stringify({
+          apiConfig: {
+            provider: apiProvider,
+            key: apiKey,
+            model: apiModel,
+          },
           companyName,
           companyCulture,
           profilesHired,
@@ -289,9 +324,13 @@ export default function Home() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(apiKey ? { "x-gemini-key": apiKey } : {}),
         },
         body: JSON.stringify({
+          apiConfig: {
+            provider: apiProvider,
+            key: apiKey,
+            model: apiModel,
+          },
           companyContext: { companyName, companyCulture, tone },
           agentPersona,
           conversationHistory: updatedMessages.slice(0, -1), // prior history
@@ -387,39 +426,68 @@ export default function Home() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-panel hover:bg-bg-input text-xs font-mono text-text-secondary hover:text-text-primary border border-border-theme transition-all cursor-pointer"
             >
               <Key className="w-3.5 h-3.5 text-cyan-500" />
-              {apiKey ? "API Key Configured" : "Provide API Key"}
+              {apiKey ? `${apiProvider.toUpperCase()} Configured` : "Configure LLM API"}
             </button>
 
             {showKeyInput && (
               <div className="absolute right-0 mt-2 w-80 p-4 bg-bg-card-dark border border-border-theme rounded-xl shadow-2xl z-50 text-xs">
-                <h4 className="font-bold mb-2 flex items-center gap-1.5 text-text-primary">
+                <h4 className="font-bold mb-3 flex items-center gap-1.5 text-text-primary">
                   <Settings className="w-3.5 h-3.5 text-text-secondary" />
-                  Gemini API Configuration
+                  LLM API Configuration
                 </h4>
-                <p className="text-text-secondary mb-3 leading-relaxed">
-                  Enter your Google AI Studio API key. If omitted, the app will try to read <code>GEMINI_API_KEY</code> from the server context.
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="password"
-                    placeholder="AI Studio key (AIzaSy...)"
-                    value={apiKey}
-                    onChange={(e) => handleSaveKey(e.target.value)}
-                    className="flex-1 bg-bg-panel border border-border-theme rounded px-2.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                  {apiKey && (
-                    <button 
-                      onClick={() => handleSaveKey("")}
-                      className="px-2 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/20 rounded font-medium transition-colors"
+                
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <label className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">API Provider</label>
+                    <select
+                      value={apiProvider}
+                      onChange={(e) => handleSaveProvider(e.target.value as any)}
+                      className="w-full bg-bg-panel border border-border-theme rounded px-2.5 py-1.5 text-text-primary focus:outline-none focus:border-cyan-500"
                     >
-                      Clear
-                    </button>
-                  )}
+                      <option value="gemini">Google Gemini</option>
+                      <option value="openai">OpenAI ChatGPT</option>
+                      <option value="anthropic">Anthropic Claude</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">API Key</label>
+                    <input
+                      type="password"
+                      placeholder={
+                        apiProvider === "gemini" ? "AI Studio key (AIzaSy...)" :
+                        apiProvider === "openai" ? "OpenAI key (sk-proj-...)" :
+                        "Claude key (sk-ant-...)"
+                      }
+                      value={apiKey}
+                      onChange={(e) => handleSaveKey(e.target.value)}
+                      className="w-full bg-bg-panel border border-border-theme rounded px-2.5 py-1.5 text-text-primary focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1 flex justify-between">
+                      <span>Model Override</span>
+                      <span className="text-[9px] text-text-secondary lowercase">(optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder={
+                        apiProvider === "gemini" ? "gemini-1.5-flash" :
+                        apiProvider === "openai" ? "gpt-4o-mini" :
+                        "claude-3-5-sonnet-20241022"
+                      }
+                      value={apiModel}
+                      onChange={(e) => handleSaveModel(e.target.value)}
+                      className="w-full bg-bg-panel border border-border-theme rounded px-2.5 py-1.5 text-text-primary focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-border-card-dark flex justify-between text-[10px] text-text-secondary">
+
+                <div className="mt-4 pt-3 border-t border-border-card-dark flex justify-between text-[10px] text-text-secondary">
                   <span>Saves to localStorage</span>
                   <span className="text-emerald-500 flex items-center gap-1">
-                    <Check className="w-3 h-3" /> Secure Connection
+                    <Check className="w-3 h-3" /> Secure Client
                   </span>
                 </div>
               </div>
@@ -852,7 +920,7 @@ export default function Home() {
                 <AlertCircle className="w-5 h-5 shrink-0" />
                 <div>
                   <span className="font-bold">Execution Error:</span> {errorMsg}.
-                  {!apiKey && <span className="ml-1 text-cyan-500">Try entering your Gemini API key in the configuration bar above.</span>}
+                  {!apiKey && <span className="ml-1 text-cyan-300">Try configuring your API key in the configuration bar above.</span>}
                 </div>
               </div>
             )}

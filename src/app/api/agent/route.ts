@@ -1,60 +1,135 @@
 import { NextResponse } from "next/server";
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
-
-interface Message {
-  sender: "agent" | "candidate";
-  text: string;
+// Clean JSON helper to strip markdown blocks if returned by LLM
+function cleanJSONString(str: string): string {
+  let cleaned = str.trim();
+  if (cleaned.startsWith("```json")) {
+    cleaned = cleaned.substring(7);
+  } else if (cleaned.startsWith("```")) {
+    cleaned = cleaned.substring(3);
+  }
+  if (cleaned.endsWith("```")) {
+    cleaned = cleaned.substring(0, cleaned.length - 3);
+  }
+  return cleaned.trim();
 }
 
-// Helper to call Gemini API
-async function callGemini(prompt: string, apiKey: string, responseSchema?: object) {
-  const url = `${GEMINI_API_URL}?key=${apiKey}`;
-  
-  const payload: any = {
-    contents: [
-      {
-        parts: [
-          { text: prompt }
-        ]
+interface LLMConfig {
+  provider: "gemini" | "openai" | "anthropic";
+  key: string;
+  model?: string;
+}
+
+// Unified LLM Caller supporting multiple providers
+async function callLLM(prompt: string, config: LLMConfig, responseSchema?: object) {
+  const { provider, key, model } = config;
+
+  if (provider === "gemini") {
+    const modelName = model || "gemini-1.5-flash";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${key}`;
+    
+    const payload: any = {
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 2048,
       }
-    ],
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 2048,
+    };
+
+    if (responseSchema) {
+      payload.generationConfig.responseMimeType = "application/json";
+      payload.generationConfig.responseSchema = responseSchema;
     }
-  };
 
-  if (responseSchema) {
-    payload.generationConfig.responseMimeType = "application/json";
-    payload.generationConfig.responseSchema = responseSchema;
-  }
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-  try {
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Gemini API returned ${res.status}: ${errText}`);
+    }
+
+    const data = await res.json();
+    const textOutput = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!textOutput) throw new Error("Empty response from Gemini API");
+    return cleanJSONString(textOutput);
+
+  } else if (provider === "openai") {
+    const modelName = model || "gpt-4o-mini";
+    const url = "https://api.openai.com/v1/chat/completions";
+
+    const payload: any = {
+      model: modelName,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 2048,
+    };
+
+    if (responseSchema) {
+      payload.response_format = { type: "json_object" };
+    }
+
     const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`,
       },
       body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
       const errText = await res.text();
-      throw new Error(`Gemini API returned error ${res.status}: ${errText}`);
+      throw new Error(`OpenAI API returned ${res.status}: ${errText}`);
     }
 
     const data = await res.json();
-    const textOutput = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    
-    if (!textOutput) {
-      throw new Error("No response content from Gemini API");
+    const textOutput = data.choices?.[0]?.message?.content;
+    if (!textOutput) throw new Error("Empty response from OpenAI API");
+    return cleanJSONString(textOutput);
+
+  } else if (provider === "anthropic") {
+    const modelName = model || "claude-3-5-sonnet-20241022";
+    const url = "https://api.anthropic.com/v1/messages";
+
+    // System prompt addition for Claude to enforce strict JSON
+    const systemPrompt = responseSchema 
+      ? "Respond ONLY with a valid JSON object matching the requested schema. Do not enclose the output in markdown code blocks or add any explanations. Begin your response with '{' and end with '}'."
+      : "You are a helpful recruitment agent assistant.";
+
+    const payload = {
+      model: modelName,
+      max_tokens: 2048,
+      messages: [{ role: "user", content: prompt }],
+      system: systemPrompt,
+      temperature: 0.7,
+    };
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Anthropic API returned ${res.status}: ${errText}`);
     }
 
-    return textOutput;
-  } catch (error: any) {
-    console.error("Gemini API call failed:", error);
-    throw error;
+    const data = await res.json();
+    const textOutput = data.content?.[0]?.text;
+    if (!textOutput) throw new Error("Empty response from Anthropic API");
+    return cleanJSONString(textOutput);
+
+  } else {
+    throw new Error(`Unsupported API provider: ${provider}`);
   }
 }
 
@@ -62,21 +137,33 @@ export async function POST(req: Request) {
   try {
     const url = new URL(req.url);
     const action = url.searchParams.get("action");
+    const body = await req.json();
 
-    // Retrieve API key from request headers or environment variables
-    const apiKey = 
-      req.headers.get("x-gemini-key") || 
-      process.env.GEMINI_API_KEY || 
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    // Resolve API configuration from body or server environment variables
+    const clientConfig = body.apiConfig || {};
+    const provider = clientConfig.provider || "gemini";
+    let key = clientConfig.key || "";
+    const model = clientConfig.model || "";
 
-    if (!apiKey) {
+    // Fallback to server env variables if key is not supplied by client
+    if (!key) {
+      if (provider === "gemini") {
+        key = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+      } else if (provider === "openai") {
+        key = process.env.OPENAI_API_KEY || "";
+      } else if (provider === "anthropic") {
+        key = process.env.ANTHROPIC_API_KEY || "";
+      }
+    }
+
+    if (!key) {
       return NextResponse.json(
-        { error: "Gemini API key is required. Please provide it in the headers or set GEMINI_API_KEY env variable." },
+        { error: `API Key for provider '${provider}' is required. Please set it in the config popup or as an environment variable.` },
         { status: 400 }
       );
     }
 
-    const body = await req.json();
+    const config: LLMConfig = { provider, key, model };
 
     if (action === "init") {
       const { companyName, companyCulture, profilesHired, tone, outboundIntent } = body;
@@ -161,7 +248,7 @@ Output a JSON object matching this schema:
         required: ["agentName", "agentTitle", "personaDescription", "pitchAngle", "systemGuidelines", "outreachSequence"]
       };
 
-      const result = await callGemini(initPrompt, apiKey, responseSchema);
+      const result = await callLLM(initPrompt, config, responseSchema);
       return NextResponse.json(JSON.parse(result));
 
     } else if (action === "chat") {
@@ -175,7 +262,7 @@ Output a JSON object matching this schema:
       }
 
       // Format conversation history
-      const formattedHistory = (conversationHistory || []).map((msg: Message) => {
+      const formattedHistory = (conversationHistory || []).map((msg: any) => {
         const speaker = msg.sender === "agent" ? `${agentPersona.agentName} (${agentPersona.agentTitle})` : "Candidate";
         return `${speaker}: "${msg.text}"`;
       }).join("\n");
@@ -262,7 +349,7 @@ Output a JSON object matching this schema:
         required: ["analysis", "strategy", "initialDraft", "selfReview", "refinement", "finalMessage"]
       };
 
-      const result = await callGemini(chatPrompt, apiKey, responseSchema);
+      const result = await callLLM(chatPrompt, config, responseSchema);
       return NextResponse.json(JSON.parse(result));
 
     } else {

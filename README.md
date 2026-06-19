@@ -2,9 +2,8 @@
 
 A state-of-the-art interactive web sandbox for simulating and observing **autonomous recruiting agents** that learn company context, synthesize their own recruiter personas, and run candidate engagement campaigns with real-time, transparent self-reflection.
 
-## 🚀 Live URL & Code
+## 🚀 Live URL
 * **Live App**: [https://psview-agent-simulator.vercel.app](https://psview-agent-simulator.vercel.app)
-* **GitHub Repository**: [https://github.com/yacine-baghli/psview-agent-simulator](https://github.com/yacine-baghli/psview-agent-simulator)
 * **Author**: Yacine Baghli
 
 ---
@@ -19,10 +18,15 @@ A state-of-the-art interactive web sandbox for simulating and observing **autono
 
 Follow these steps to run a candidate outreach campaign simulation:
 
-### 1. Configure the API Key
-* Click on **"Provide API Key"** in the top right header.
-* Paste your **Google AI Studio (Gemini) API Key** and press Enter. 
-* *Note: The key is saved securely in your browser's local storage and is never sent to any server other than directly to the Gemini API endpoint. If an environment variable `GEMINI_API_KEY` is configured on your server (like on Vercel), you can skip this step.*
+### 1. Configure the API Provider & Key
+* Click on **"Configure LLM API"** (or provider name) in the top right header.
+* Select your preferred LLM Provider:
+  * **Google Gemini**: Uses the Google AI Studio backend.
+  * **OpenAI ChatGPT**: Uses the standard OpenAI chat completions endpoint.
+  * **Anthropic Claude**: Uses the Anthropic Claude messages backend.
+* Paste your corresponding **API Key** (e.g. `AIzaSy...`, `sk-proj-...`, or `sk-ant-...`).
+* *(Optional)* Override the **Model Name** to use a specific version (e.g. `gpt-4o`, `claude-3-5-sonnet-20241022`, or `gemini-1.5-pro`).
+* *Note: Keys are saved securely in your browser's local storage and are never sent to any server other than directly to the corresponding LLM API endpoints. If environment variables (`GEMINI_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY`) are configured on your server (like on Vercel), you can skip manual key configuration.*
 
 ### 2. Choose a Preset (or Create Your Own)
 * Select one of the pre-configured templates at the top to instantly load realistic parameters:
@@ -60,7 +64,7 @@ Follow these steps to run a candidate outreach campaign simulation:
 
 * **Next.js 16 (App Router) & TypeScript**: Server-side routing, static optimizations, and robust API endpoints.
 * **Tailwind CSS & Theme CSS Variables**: Bespoke layout supporting instant, smooth transitions between **Dark Mode** and **Light Mode** (managed via state and CSS custom properties).
-* **Google Gemini 1.5 Flash**: Lightning-fast inference speeds with strict structured JSON output support.
+* **Multi-Provider LLM Integration**: Hand-rolled, lightweight fetch integrations for Google AI Studio, OpenAI, and Anthropic backends.
 * **Lucide React**: Premium icon pack for clean dashboard classification.
 
 ---
@@ -69,7 +73,7 @@ Follow these steps to run a candidate outreach campaign simulation:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yacine-baghli/psview-agent-simulator.git
+   git clone <your-repository-url>
    cd psview-agent-simulator
    ```
 
@@ -78,10 +82,12 @@ Follow these steps to run a candidate outreach campaign simulation:
    npm install
    ```
 
-3. **Configure environment key (optional)**:
+3. **Configure environment keys (optional)**:
    Create a `.env.local` file:
    ```env
-   GEMINI_API_KEY=your_google_ai_studio_api_key
+   GEMINI_API_KEY=your_gemini_api_key
+   OPENAI_API_KEY=your_openai_api_key
+   ANTHROPIC_API_KEY=your_claude_api_key
    ```
 
 4. **Run local server**:
