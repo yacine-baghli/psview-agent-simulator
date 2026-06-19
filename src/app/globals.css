@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Mode values */
+  --bg-primary: #f8fafc;
+  --bg-panel: rgba(255, 255, 255, 0.75);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --bg-input: rgba(0, 0, 0, 0.02);
+  --bg-card-dark: #f1f5f9;
+  --border-card-dark: rgba(0, 0, 0, 0.06);
+  
+  --bg-chat-agent: rgba(255, 255, 255, 0.9);
+  --text-chat-agent: #1e293b;
+  --border-chat-agent: rgba(0, 0, 0, 0.06);
+  
+  --bg-chat-candidate: rgba(99, 102, 241, 0.07);
+  --text-chat-candidate: #312e81;
+  --border-chat-candidate: rgba(99, 102, 241, 0.12);
+  
+  --bg-chip: rgba(99, 102, 241, 0.05);
+  --text-chip: #4f46e5;
+  --border-chip: rgba(99, 102, 241, 0.1);
+
+  --header-bg: rgba(248, 250, 252, 0.8);
+  --footer-bg: #f1f5f9;
+
+  --glow-1: rgba(16, 185, 129, 0.02);
+  --glow-2: rgba(99, 102, 241, 0.02);
+  --glow-3: rgba(168, 85, 247, 0.02);
+}
+
+.dark {
+  /* Dark Mode values */
+  --bg-primary: #07090e;
+  --bg-panel: rgba(255, 255, 255, 0.04);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --bg-input: rgba(255, 255, 255, 0.04);
+  --bg-card-dark: #0c111c;
+  --border-card-dark: rgba(255, 255, 255, 0.05);
+  
+  --bg-chat-agent: rgba(255, 255, 255, 0.04);
+  --text-chat-agent: #e2e8f0;
+  --border-chat-agent: rgba(255, 255, 255, 0.05);
+  
+  --bg-chat-candidate: rgba(99, 102, 241, 0.15);
+  --text-chat-candidate: #f1f5f9;
+  --border-chat-candidate: rgba(99, 102, 241, 0.25);
+  
+  --bg-chip: rgba(99, 102, 241, 0.08);
+  --text-chip: #a5b4fc;
+  --border-chip: rgba(99, 102, 241, 0.15);
+
+  --header-bg: rgba(7, 9, 14, 0.8);
+  --footer-bg: #07090e;
+
+  --glow-1: rgba(16, 185, 129, 0.04);
+  --glow-2: rgba(99, 102, 241, 0.04);
+  --glow-3: rgba(168, 85, 247, 0.04);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-panel: var(--bg-panel);
+  --color-border-theme: var(--border-color);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-bg-input: var(--bg-input);
+  --color-bg-card-dark: var(--bg-card-dark);
+  --color-border-card-dark: var(--border-card-dark);
+
+  --color-bg-chat-agent: var(--bg-chat-agent);
+  --color-text-chat-agent: var(--text-chat-agent);
+  --color-border-chat-agent: var(--border-chat-agent);
+
+  --color-bg-chat-candidate: var(--bg-chat-candidate);
+  --color-text-chat-candidate: var(--text-chat-candidate);
+  --color-border-chat-candidate: var(--border-chat-candidate);
+
+  --color-bg-chip: var(--bg-chip);
+  --color-text-chip: var(--text-chip);
+  --color-border-chip: var(--border-chip);
+
+  --color-header-bg: var(--header-bg);
+  --color-footer-bg: var(--footer-bg);
+
+  --color-glow-1: var(--glow-1);
+  --color-glow-2: var(--glow-2);
+  --color-glow-3: var(--glow-3);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
