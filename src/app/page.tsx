@@ -432,7 +432,7 @@ export default function Home() {
             </button>
 
             {showKeyInput && (
-              <div className="absolute right-0 mt-2 w-80 p-4 bg-bg-card-dark border border-border-theme rounded-xl shadow-2xl z-50 text-xs relative">
+              <div className="absolute right-0 mt-2 w-80 p-4 bg-bg-card-dark border border-border-theme rounded-xl shadow-2xl z-50 text-xs">
                 <button 
                   type="button"
                   onClick={() => setShowKeyInput(false)}
