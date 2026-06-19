@@ -21,7 +21,8 @@ import {
   Info,
   Settings,
   Sun,
-  Moon
+  Moon,
+  X
 } from "lucide-react";
 import { PRESETS, CompanyPreset } from "./presets";
 
@@ -430,7 +431,15 @@ export default function Home() {
             </button>
 
             {showKeyInput && (
-              <div className="absolute right-0 mt-2 w-80 p-4 bg-bg-card-dark border border-border-theme rounded-xl shadow-2xl z-50 text-xs">
+              <div className="absolute right-0 mt-2 w-80 p-4 bg-bg-card-dark border border-border-theme rounded-xl shadow-2xl z-50 text-xs relative">
+                <button 
+                  type="button"
+                  onClick={() => setShowKeyInput(false)}
+                  className="absolute top-3 right-3 text-text-secondary hover:text-text-primary p-1 rounded-lg hover:bg-bg-input transition-colors cursor-pointer"
+                  title="Close Configuration"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
                 <h4 className="font-bold mb-3 flex items-center gap-1.5 text-text-primary">
                   <Settings className="w-3.5 h-3.5 text-text-secondary" />
                   LLM API Configuration
@@ -521,7 +530,7 @@ export default function Home() {
 
         {/* COLUMN 1: Company Context & Campaign Settings (Left Panel - 4/12 cols) */}
         <section className="lg:col-span-4 flex flex-col gap-6">
-          <div className="bg-bg-panel border border-border-theme rounded-2xl p-6 shadow-xl flex flex-col h-full relative overflow-hidden backdrop-blur-md transition-colors duration-300">
+          <div className="bg-bg-panel border border-border-theme rounded-2xl p-6 shadow-xl flex flex-col max-h-[880px] overflow-y-auto relative backdrop-blur-md transition-colors duration-300">
             
             {/* Panel Title */}
             <div className="flex items-center gap-2 mb-6">
@@ -604,6 +613,64 @@ export default function Home() {
                   placeholder="Who are you targeting, for what role, and what specific hook should the agent configure itself around?"
                   className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2.5 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary resize-none leading-relaxed"
                 />
+              </div>
+
+              {/* Simulated Candidate Profile Customization Section */}
+              <div className="border-t border-border-theme pt-4 mt-2 flex flex-col gap-3">
+                <h3 className="text-xs font-bold text-text-primary flex items-center gap-1.5 uppercase tracking-wider">
+                  <User className="w-3.5 h-3.5 text-cyan-500" />
+                  Simulated Candidate Profile
+                </h3>
+                
+                <div>
+                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Candidate Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={candidateName}
+                    onChange={(e) => setCandidateName(e.target.value)}
+                    placeholder="e.g. Alex Rivera"
+                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Headline</label>
+                  <input
+                    type="text"
+                    required
+                    value={candidateHeadline}
+                    onChange={(e) => setCandidateHeadline(e.target.value)}
+                    placeholder="e.g. Creator of open-source project"
+                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Candidate Biography Context</label>
+                  <textarea
+                    rows={2}
+                    required
+                    value={candidateBio}
+                    onChange={(e) => setCandidateBio(e.target.value)}
+                    placeholder="Describe candidate's history, traits, and background..."
+                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary resize-none leading-relaxed text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide flex justify-between">
+                    <span>Quick-Replies (one per line)</span>
+                  </label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={quickReplies.join("\n")}
+                    onChange={(e) => setQuickReplies(e.target.value.split("\n"))}
+                    placeholder="Replies candidate can quickly select..."
+                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary resize-none leading-relaxed text-xs"
+                  />
+                </div>
               </div>
 
               <button

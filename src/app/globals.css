@@ -1,34 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  /* Light Mode values */
-  --bg-primary: #f8fafc;
-  --bg-panel: rgba(255, 255, 255, 0.75);
-  --border-color: rgba(0, 0, 0, 0.08);
+  /* Softer, slate-based Light Mode values (less blindingly white, premium shadows) */
+  --bg-primary: #e2e8f0;
+  --bg-panel: #f8fafc;
+  --border-color: #cbd5e1;
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --bg-input: rgba(0, 0, 0, 0.02);
+  --bg-input: #ffffff;
   --bg-card-dark: #f1f5f9;
-  --border-card-dark: rgba(0, 0, 0, 0.06);
+  --border-card-dark: #cbd5e1;
   
-  --bg-chat-agent: rgba(255, 255, 255, 0.9);
+  --bg-chat-agent: #ffffff;
   --text-chat-agent: #1e293b;
-  --border-chat-agent: rgba(0, 0, 0, 0.06);
+  --border-chat-agent: rgba(0, 0, 0, 0.08);
   
-  --bg-chat-candidate: rgba(99, 102, 241, 0.07);
+  --bg-chat-candidate: rgba(99, 102, 241, 0.08);
   --text-chat-candidate: #312e81;
-  --border-chat-candidate: rgba(99, 102, 241, 0.12);
+  --border-chat-candidate: rgba(99, 102, 241, 0.15);
   
-  --bg-chip: rgba(99, 102, 241, 0.05);
+  --bg-chip: rgba(99, 102, 241, 0.06);
   --text-chip: #4f46e5;
-  --border-chip: rgba(99, 102, 241, 0.1);
+  --border-chip: rgba(99, 102, 241, 0.12);
 
-  --header-bg: rgba(248, 250, 252, 0.8);
-  --footer-bg: #f1f5f9;
+  --header-bg: rgba(248, 250, 252, 0.85);
+  --footer-bg: #e2e8f0;
 
-  --glow-1: rgba(16, 185, 129, 0.02);
-  --glow-2: rgba(99, 102, 241, 0.02);
-  --glow-3: rgba(168, 85, 247, 0.02);
+  --glow-1: rgba(16, 185, 129, 0.03);
+  --glow-2: rgba(99, 102, 241, 0.03);
+  --glow-3: rgba(168, 85, 247, 0.03);
 }
 
 .dark {
@@ -100,4 +100,15 @@ body {
   color: var(--text-primary);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Style select and option elements to ensure readable contrast */
+select {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+}
+
+select option {
+  background-color: var(--bg-card-dark) !important;
+  color: var(--text-primary) !important;
 }

@@ -44,7 +44,8 @@ Follow these steps to run a candidate outreach campaign simulation:
   * **Mistral AI**: GPU infra optimization recruiting with high-performance model clusters.
   <img width="542" height="846" alt="image" src="https://github.com/user-attachments/assets/03263484-131d-44ab-8d96-8c1fdb423acf" />
 
-* Alternatively, edit the form fields manually to configure your custom company name, industry, tone preference, perks/culture, and outbound campaign intent.
+* Alternatively, edit the form fields manually to configure your custom company name, industry, tone preference, perks/culture, and outbound campaign intent. 
+* **Candidate Customization**: You can also edit the **Simulated Candidate Profile** (Name, Headline, Biography context, and Sandbox Quick-Replies) directly inside the setup panel at the start to test the agent's behavior with any custom profile.
 
 
 
@@ -79,6 +80,11 @@ Follow these steps to run a candidate outreach campaign simulation:
   5. **Delivery**: Show if self-correction was triggered and output the final response!
 <img width="1646" height="364" alt="image" src="https://github.com/user-attachments/assets/6683f5f0-846f-43e2-b6d3-5a8eb27b9279" />
 <img width="1641" height="406" alt="image" src="https://github.com/user-attachments/assets/a6a3a617-f158-4090-8ee9-4ce4cda14dcd" />
+
+---
+
+## 🌓 Visual Theme Options (Light & Dark Mode)
+The application includes a theme switcher in the top header. You can toggle between a sleek, high-tech dark mode and a soft, slate-zinc-based light mode (designed to be easy on the eyes while retaining modern shadows and glassmorphic panel depth).
 
 ---
 
