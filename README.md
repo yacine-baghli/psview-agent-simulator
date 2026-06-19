@@ -36,13 +36,13 @@ Follow these steps to run a candidate outreach campaign simulation:
 ### 2. Choose a Preset (or Create Your Own)
 * Select one of the pre-configured templates at the top to instantly load realistic parameters:
   * **PSVIEW**: High-agency startup context looking for founding engineering interns.
-  <img width="509" height="643" alt="image" src="https://github.com/user-attachments/assets/07d4e0f9-8e68-474c-b5a0-dce2a5084df1" />
+  <img width="356" height="450" alt="image" src="https://github.com/user-attachments/assets/07d4e0f9-8e68-474c-b5a0-dce2a5084df1" />
 
   * **Linear**: Craftsmanship-driven designer search with an async, remote-first culture.
-  <img width="595" height="873" alt="image" src="https://github.com/user-attachments/assets/1311c935-466d-4a4d-9eef-d500f87867c6" />
+  <img width="417" height="611" alt="image" src="https://github.com/user-attachments/assets/1311c935-466d-4a4d-9eef-d500f87867c6" />
 
   * **Mistral AI**: GPU infra optimization recruiting with high-performance model clusters.
-  <img width="542" height="846" alt="image" src="https://github.com/user-attachments/assets/03263484-131d-44ab-8d96-8c1fdb423acf" />
+  <img width="379" height="592" alt="image" src="https://github.com/user-attachments/assets/03263484-131d-44ab-8d96-8c1fdb423acf" />
 
 * Alternatively, edit the form fields manually to configure your custom company name, industry, tone preference, perks/culture, and outbound campaign intent. 
 * **Candidate Customization**: You can customize the simulated test candidate profile at any time. Click the **"Configure Test Candidate"** button in the Interactive Sandbox header, click the **"Configure Test Candidate Profile"** button in the empty chat state, or click the **Settings Gear icon** in the Candidate Bio header once the agent is active. This opens a dedicated configuration modal where you can edit the Candidate's Name, Headline, Biography context, and Sandbox Quick-Replies in real-time.
@@ -56,7 +56,7 @@ Follow these steps to run a candidate outreach campaign simulation:
   * A set of **Cognitive Guardrails** (Rules it must respect).
   * A **Planned Touchpoint Sequence** (Messages 1, 2, and 3).
 <img width="513" height="460" alt="image" src="https://github.com/user-attachments/assets/19ec716b-e37e-435c-a30b-c2b455f221de" />
-<img width="497" height="642" alt="image" src="https://github.com/user-attachments/assets/c182cb95-0df8-4f84-9ca0-960e26531e9f" />
+<img width="348" height="449" alt="image" src="https://github.com/user-attachments/assets/c182cb95-0df8-4f84-9ca0-960e26531e9f" />
 
 ### 4. Run the Sandbox Simulator
 * Click **"Initiate Campaign Simulator"** in the middle panel. This will send step 1 of your campaign sequence to the candidate chat sandbox on the right.
