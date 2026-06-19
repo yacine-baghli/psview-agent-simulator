@@ -45,7 +45,7 @@ Follow these steps to run a candidate outreach campaign simulation:
   <img width="542" height="846" alt="image" src="https://github.com/user-attachments/assets/03263484-131d-44ab-8d96-8c1fdb423acf" />
 
 * Alternatively, edit the form fields manually to configure your custom company name, industry, tone preference, perks/culture, and outbound campaign intent. 
-* **Candidate Customization**: You can also edit the **Simulated Candidate Profile** (Name, Headline, Biography context, and Sandbox Quick-Replies) directly inside the setup panel at the start to test the agent's behavior with any custom profile.
+* **Candidate Customization**: You can customize the simulated test candidate profile at any time. Click the **"Configure Test Candidate"** button in the Interactive Sandbox header, click the **"Configure Test Candidate Profile"** button in the empty chat state, or click the **Settings Gear icon** in the Candidate Bio header once the agent is active. This opens a dedicated configuration modal where you can edit the Candidate's Name, Headline, Biography context, and Sandbox Quick-Replies in real-time.
 
 
 

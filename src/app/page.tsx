@@ -72,6 +72,7 @@ export default function Home() {
   const [apiKey, setApiKey] = useState("");
   const [apiModel, setApiModel] = useState("");
   const [showKeyInput, setShowKeyInput] = useState(false);
+  const [showCandidateModal, setShowCandidateModal] = useState(false);
 
   // Form State (initialized with first preset - PSVIEW)
   const [companyName, setCompanyName] = useState("");
@@ -615,63 +616,6 @@ export default function Home() {
                 />
               </div>
 
-              {/* Simulated Candidate Profile Customization Section */}
-              <div className="border-t border-border-theme pt-4 mt-2 flex flex-col gap-3">
-                <h3 className="text-xs font-bold text-text-primary flex items-center gap-1.5 uppercase tracking-wider">
-                  <User className="w-3.5 h-3.5 text-cyan-500" />
-                  Simulated Candidate Profile
-                </h3>
-                
-                <div>
-                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Candidate Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={candidateName}
-                    onChange={(e) => setCandidateName(e.target.value)}
-                    placeholder="e.g. Alex Rivera"
-                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Headline</label>
-                  <input
-                    type="text"
-                    required
-                    value={candidateHeadline}
-                    onChange={(e) => setCandidateHeadline(e.target.value)}
-                    placeholder="e.g. Creator of open-source project"
-                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Candidate Biography Context</label>
-                  <textarea
-                    rows={2}
-                    required
-                    value={candidateBio}
-                    onChange={(e) => setCandidateBio(e.target.value)}
-                    placeholder="Describe candidate's history, traits, and background..."
-                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary resize-none leading-relaxed text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide flex justify-between">
-                    <span>Quick-Replies (one per line)</span>
-                  </label>
-                  <textarea
-                    rows={3}
-                    required
-                    value={quickReplies.join("\n")}
-                    onChange={(e) => setQuickReplies(e.target.value.split("\n"))}
-                    placeholder="Replies candidate can quickly select..."
-                    className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary resize-none leading-relaxed text-xs"
-                  />
-                </div>
-              </div>
 
               <button
                 type="submit"
@@ -809,34 +753,55 @@ export default function Home() {
                 <MessageSquare className="w-5 h-5 text-cyan-500" />
                 <h2 className="text-base font-bold text-text-primary">3. Interactive Sandbox</h2>
               </div>
-              {messages.length > 0 && (
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => {
-                    setMessages([]);
-                    setCurrentStep(0);
-                    setActiveReasoning(null);
-                    setReasoningPhase("idle");
-                  }}
-                  className="p-1.5 rounded-lg bg-bg-input hover:bg-bg-panel border border-border-theme text-[10px] flex items-center gap-1 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+                  type="button"
+                  onClick={() => setShowCandidateModal(true)}
+                  className="p-1.5 rounded-lg bg-bg-input hover:bg-bg-panel border border-border-theme text-[10px] flex items-center gap-1 text-text-secondary hover:text-text-primary transition-colors cursor-pointer font-mono"
+                  title="Configure simulated test candidate profile"
                 >
-                  <RefreshCw className="w-3 h-3" /> Reset Chat
+                  <User className="w-3.5 h-3.5 text-indigo-500" />
+                  Configure Test Candidate
                 </button>
-              )}
+                {messages.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setMessages([]);
+                      setCurrentStep(0);
+                      setActiveReasoning(null);
+                      setReasoningPhase("idle");
+                    }}
+                    className="p-1.5 rounded-lg bg-bg-input hover:bg-bg-panel border border-border-theme text-[10px] flex items-center gap-1 text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+                  >
+                    <RefreshCw className="w-3 h-3" /> Reset Chat
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Candidate Bio Header */}
             {agentPersona && (
-              <div className="p-4 bg-bg-panel border-b border-border-theme flex gap-3 text-xs">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-                  <User className="w-5 h-5 text-indigo-500" />
+              <div className="p-4 bg-bg-panel border-b border-border-theme flex gap-3 text-xs justify-between items-start">
+                <div className="flex gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
+                    <User className="w-5 h-5 text-indigo-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-text-primary">{candidateName}</h4>
+                    <p className="text-[10px] text-cyan-500 leading-tight font-medium mb-1">{candidateHeadline}</p>
+                    <p className="text-[10px] text-text-secondary leading-relaxed max-h-[38px] overflow-y-auto bg-bg-input p-1.5 rounded border border-border-theme font-mono">
+                      {candidateBio}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-text-primary">{candidateName}</h4>
-                  <p className="text-[10px] text-cyan-500 leading-tight font-medium mb-1">{candidateHeadline}</p>
-                  <p className="text-[10px] text-text-secondary leading-relaxed max-h-[38px] overflow-y-auto bg-bg-input p-1.5 rounded border border-border-theme font-mono">
-                    {candidateBio}
-                  </p>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCandidateModal(true)}
+                  className="p-1.5 rounded-lg bg-bg-input hover:bg-bg-panel border border-border-theme text-text-secondary hover:text-text-primary transition-colors cursor-pointer shrink-0"
+                  title="Configure test candidate profile"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                </button>
               </div>
             )}
 
@@ -847,9 +812,17 @@ export default function Home() {
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <h4 className="text-sm font-semibold mb-1 text-text-primary">Outreach Thread Sandbox</h4>
-                <p className="text-xs text-text-secondary max-w-xs leading-relaxed">
+                <p className="text-xs text-text-secondary max-w-xs leading-relaxed mb-4">
                   Start the simulator by pressing &ldquo;Initiate Campaign Simulator&rdquo; in the middle panel. This will send step 1 of your sequence.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setShowCandidateModal(true)}
+                  className="px-4 py-2 bg-indigo-500 hover:bg-indigo-400 text-white font-medium text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-[0_4px_12px_rgba(99,102,241,0.15)] cursor-pointer"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  Configure Test Candidate Profile
+                </button>
               </div>
             ) : (
               // Chat Sandbox Stream
@@ -1243,6 +1216,96 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Candidate Profile Modal */}
+      {showCandidateModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-lg bg-bg-panel border border-border-theme rounded-2xl p-6 shadow-2xl relative flex flex-col gap-4 text-xs transition-colors duration-300">
+            <button 
+              type="button"
+              onClick={() => setShowCandidateModal(false)}
+              className="absolute top-4 right-4 text-text-secondary hover:text-text-primary p-1 rounded-lg hover:bg-bg-input transition-colors cursor-pointer"
+              title="Close Settings"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shrink-0">
+                <User className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-text-primary">
+                  Configure Test Candidate Profile
+                </h3>
+                <p className="text-[10px] text-text-secondary">Set the mock candidate variables for simulation</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div>
+                <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Candidate Name</label>
+                <input
+                  type="text"
+                  required
+                  value={candidateName}
+                  onChange={(e) => setCandidateName(e.target.value)}
+                  placeholder="e.g. Alex Rivera"
+                  className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Headline</label>
+                <input
+                  type="text"
+                  required
+                  value={candidateHeadline}
+                  onChange={(e) => setCandidateHeadline(e.target.value)}
+                  placeholder="e.g. Creator of open-source project"
+                  className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">Biography Context</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={candidateBio}
+                  onChange={(e) => setCandidateBio(e.target.value)}
+                  placeholder="Describe candidate's history, traits, and background..."
+                  className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary resize-none leading-relaxed"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-text-secondary font-semibold mb-1 uppercase tracking-wide">
+                  Quick-Replies (one per line)
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={quickReplies.join("\n")}
+                  onChange={(e) => setQuickReplies(e.target.value.split("\n"))}
+                  placeholder="Replies candidate can quickly select..."
+                  className="w-full bg-bg-input border border-border-theme rounded-lg px-3.5 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-text-secondary resize-none leading-relaxed"
+                />
+              </div>
+            </div>
+
+            <div className="mt-2 pt-3 border-t border-border-theme flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowCandidateModal(false)}
+                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-[11px] rounded-lg transition-colors cursor-pointer"
+              >
+                Apply & Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
