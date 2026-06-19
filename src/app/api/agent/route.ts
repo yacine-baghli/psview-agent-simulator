@@ -219,27 +219,33 @@ Output a JSON object matching this schema:
     }
   ]
 }
+
+CRITICAL FORMATTING GUIDELINE:
+You must output ONLY a valid JSON object matching the schema.
+Ensure all string values are correctly escaped. Any internal double quotes within the strings must be strictly escaped (e.g. using \\" or using single quotes instead).
+Do not include any literal newlines inside string values (use \\n for newlines).
+Do not add any explanations or markdown wrapping blocks.
 `;
 
       const responseSchema = {
-        type: "OBJECT",
+        type: "object",
         properties: {
-          agentName: { type: "STRING" },
-          agentTitle: { type: "STRING" },
-          personaDescription: { type: "STRING" },
-          pitchAngle: { type: "STRING" },
+          agentName: { type: "string" },
+          agentTitle: { type: "string" },
+          personaDescription: { type: "string" },
+          pitchAngle: { type: "string" },
           systemGuidelines: {
-            type: "ARRAY",
-            items: { type: "STRING" }
+            type: "array",
+            items: { type: "string" }
           },
           outreachSequence: {
-            type: "ARRAY",
+            type: "array",
             items: {
-              type: "OBJECT",
+              type: "object",
               properties: {
-                step: { type: "INTEGER" },
-                subject: { type: "STRING" },
-                message: { type: "STRING" }
+                step: { type: "integer" },
+                subject: { type: "string" },
+                message: { type: "string" }
               },
               required: ["step", "message"]
             }
@@ -249,7 +255,15 @@ Output a JSON object matching this schema:
       };
 
       const result = await callLLM(initPrompt, config, responseSchema);
-      return NextResponse.json(JSON.parse(result));
+      try {
+        return NextResponse.json(JSON.parse(result));
+      } catch (err: any) {
+        console.error("JSON parsing failed in init action. Raw response:", result);
+        return NextResponse.json(
+          { error: `Failed to parse LLM JSON response: ${err.message}. Raw output was: ${result}` },
+          { status: 500 }
+        );
+      }
 
     } else if (action === "chat") {
       const { companyContext, agentPersona, conversationHistory, candidateReply } = body;
@@ -314,43 +328,57 @@ Output a JSON object matching this schema:
   "refinement": "Refined message if needed, or explanation of why draft is good",
   "finalMessage": "The message to send to the candidate"
 }
+
+CRITICAL FORMATTING GUIDELINE:
+You must output ONLY a valid JSON object matching the schema.
+Ensure all string values are correctly escaped. Any internal double quotes within the strings must be strictly escaped (e.g. using \\" or using single quotes instead).
+Do not include any literal newlines inside string values (use \\n for newlines).
+Do not add any explanations or markdown wrapping blocks.
 `;
 
       const responseSchema = {
-        type: "OBJECT",
+        type: "object",
         properties: {
           analysis: {
-            type: "OBJECT",
+            type: "object",
             properties: {
-              sentiment: { type: "STRING" },
-              intent: { type: "STRING" },
+              sentiment: { type: "string" },
+              intent: { type: "string" },
               keyObjections: {
-                type: "ARRAY",
-                items: { type: "STRING" }
+                type: "array",
+                items: { type: "string" }
               }
             },
             required: ["sentiment", "intent", "keyObjections"]
           },
-          strategy: { type: "STRING" },
-          initialDraft: { type: "STRING" },
+          strategy: { type: "string" },
+          initialDraft: { type: "string" },
           selfReview: {
-            type: "OBJECT",
+            type: "object",
             properties: {
-              concisenessCheck: { type: "STRING" },
-              toneCheck: { type: "STRING" },
-              accuracyCheck: { type: "STRING" },
-              passed: { type: "BOOLEAN" }
+              concisenessCheck: { type: "string" },
+              toneCheck: { type: "string" },
+              accuracyCheck: { type: "string" },
+              passed: { type: "boolean" }
             },
             required: ["concisenessCheck", "toneCheck", "accuracyCheck", "passed"]
           },
-          refinement: { type: "STRING" },
-          finalMessage: { type: "STRING" }
+          refinement: { type: "string" },
+          finalMessage: { type: "string" }
         },
         required: ["analysis", "strategy", "initialDraft", "selfReview", "refinement", "finalMessage"]
       };
 
       const result = await callLLM(chatPrompt, config, responseSchema);
-      return NextResponse.json(JSON.parse(result));
+      try {
+        return NextResponse.json(JSON.parse(result));
+      } catch (err: any) {
+        console.error("JSON parsing failed in chat action. Raw response:", result);
+        return NextResponse.json(
+          { error: `Failed to parse LLM JSON response: ${err.message}. Raw output was: ${result}` },
+          { status: 500 }
+        );
+      }
 
     } else {
       return NextResponse.json({ error: "Invalid action." }, { status: 400 });

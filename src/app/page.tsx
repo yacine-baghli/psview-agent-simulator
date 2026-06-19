@@ -422,7 +422,7 @@ export default function Home() {
           </button>
 
           {/* API Key configuration */}
-          <div className="relative">
+          <div className="relative" style={{ position: "relative" }}>
             <button 
               onClick={() => setShowKeyInput(!showKeyInput)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-panel hover:bg-bg-input text-xs font-mono text-text-secondary hover:text-text-primary border border-border-theme transition-all cursor-pointer"
@@ -432,7 +432,10 @@ export default function Home() {
             </button>
 
             {showKeyInput && (
-              <div className="absolute right-0 mt-2 w-80 p-4 bg-bg-card-dark border border-border-theme rounded-xl shadow-2xl z-50 text-xs">
+              <div 
+                className="absolute right-0 mt-2 w-80 p-4 bg-bg-card-dark border border-border-theme rounded-xl shadow-2xl z-50 text-xs"
+                style={{ position: "absolute", top: "100%", right: 0 }}
+              >
                 <button 
                   type="button"
                   onClick={() => setShowKeyInput(false)}
