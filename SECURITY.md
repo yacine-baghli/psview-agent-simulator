@@ -10,7 +10,7 @@
 
 **Do not open a public GitHub issue for security vulnerabilities.**
 
-If you discover a security issue, please email: **yacine.baghli@outlook.fr**
+If you discover a security issue, please email: **yacine.baghli@gmail.com**
 
 Include:
 - A description of the vulnerability.
