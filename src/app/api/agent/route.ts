@@ -32,7 +32,7 @@ async function callLLM(prompt: string, config: LLMConfig, responseSchema?: objec
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 2048,
+        maxOutputTokens: 8192,
       }
     };
 
@@ -65,7 +65,7 @@ async function callLLM(prompt: string, config: LLMConfig, responseSchema?: objec
       model: modelName,
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
-      max_tokens: 2048,
+      max_tokens: 8192,
     };
 
     if (responseSchema) {
@@ -102,7 +102,7 @@ async function callLLM(prompt: string, config: LLMConfig, responseSchema?: objec
 
     const payload = {
       model: modelName,
-      max_tokens: 2048,
+      max_tokens: 8192,
       messages: [{ role: "user", content: prompt }],
       system: systemPrompt,
       temperature: 0.7,
